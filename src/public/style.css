@@ -1,0 +1,125 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --background: white;
+    --foreground: black;
+    --warning: maroon;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+
+    :root {
+        --background: black;
+        --foreground: white;
+        --warning: maroon;
+    }
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--background);
+    font-family: sans-serif;
+    color: var(--foreground);
+}
+
+a {
+    color: var(--foreground);
+    text-decoration: none;
+}
+
+.text--warning {
+    color: var(--warning);
+}
+
+/* Header */
+
+header {
+    padding: 1rem;
+}
+
+header > h1 {
+    font-family: inherit;
+    font-size: 1.2rem;
+}
+
+/* Main */
+
+main {
+    flex: 1;
+}
+
+main > p {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Form */
+
+form {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	justify-content: center;
+    padding: 2.75rem;
+}
+
+form > p {
+    margin-bottom: 1.5rem;
+}
+
+form > label,
+form > input,
+form > .form__note,
+form > button {
+    width: 100%;
+    margin: 0.25rem 0;
+}
+
+form > label {
+    text-align: left;
+}
+
+form > input,
+form > button {
+    padding: 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+form > .form__note {
+    padding: 0.25rem;
+    white-space: pre-line;
+}
+
+form > button {
+    background-color: inherit;
+    color: inherit;
+}
+
+/* Footer */
+
+footer {
+    flex: 0;
+    padding: 1.5rem;
+}
+
+footer > p {
+    text-align: center;
+}
+
+@media screen and (min-width: 400px) {
+
+    main {
+        width: 400px;
+        margin: 0 auto;
+    }
+}

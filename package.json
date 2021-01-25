@@ -1,0 +1,38 @@
+{
+  "name": "docNxgres",
+  "version": "1.0.0",
+  "description": "containerized back end | docker-compose, Nginx reverse proxy, Express.js server & PostgreSQL database",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "nodemon src/index.js",
+    "start:prod": "node src/index.js"
+  },
+  "keywords": [
+    "Docker",
+    "docker-compose",
+    "containers",
+    "Nginx",
+    "reverse proxy",
+    "Node.js",
+    "Express.js",
+    "PostgreSQL",
+    "database"
+  ],
+  "author": "barcek",
+  "license": "MIT",
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "csurf": "^1.11.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "helmet": "^4.2.0",
+    "morgan": "^1.10.0",
+    "pg": "^8.4.1",
+    "pug": "^3.0.0",
+    "validator": "^13.1.17"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
