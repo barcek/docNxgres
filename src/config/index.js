@@ -21,16 +21,16 @@ const {
     //SESSION_NAME = 'session',
     //SESSION_SECRET, //NOTE: default value should be changed in .env
     //SESSION_MAXAGE = 3600000, //1000 * 60 * 60 = 1 hour
-    DATABASE_DEV_USER,
-    DATABASE_DEV_PASS,
-    DATABASE_DEV_HOST,
-    DATABASE_DEV_PORT,
-    DATABASE_DEV_NAME,
-    DATABASE_PROD_USER,
-    DATABASE_PROD_PASS,
-    DATABASE_PROD_HOST,
-    DATABASE_PROD_PORT,
-    DATABASE_PROD_NAME
+    DB_DEV_USER,
+    DB_DEV_PASS, //NOTE: default value could be changed in .env
+    DB_DEV_HOST,
+    DB_DEV_PORT,
+    DB_DEV_NAME,
+    DB_PROD_USER,
+    DB_PROD_PASS, //NOTE: default value should be changed in .env
+    DB_PROD_HOST,
+    DB_PROD_PORT,
+    DB_PROD_NAME
 } = process.env;
 
 /*
@@ -55,10 +55,10 @@ module.exports = {
     },
     */
     DB: {
-        USER: IN_PROD ? DATABASE_PROD_USER : DATABASE_DEV_USER,
-        PASS: IN_PROD ? DATABASE_PROD_PASS : DATABASE_DEV_PASS,
-        HOST: IN_PROD ? DATABASE_PROD_HOST : DATABASE_DEV_HOST,
-        PORT: IN_PROD ? DATABASE_PROD_PORT : DATABASE_DEV_PORT,
-        NAME: IN_PROD ? DATABASE_PROD_NAME : DATABASE_DEV_NAME
+        USER: IN_PROD ? DB_PROD_USER : DB_DEV_USER,
+        PASS: IN_PROD ? DB_PROD_PASS : DB_DEV_PASS,
+        HOST: IN_PROD ? DB_PROD_HOST : DB_DEV_HOST,
+        PORT: IN_PROD ? DB_PROD_PORT : DB_DEV_PORT,
+        NAME: IN_PROD ? DB_PROD_NAME : DB_DEV_NAME
     }
 };

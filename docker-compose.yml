@@ -11,6 +11,8 @@ services:
             dockerfile: Dockerfile_prod
         ports:
             - "3000"
+        environment:
+            SERVER_PORT: 3000
         volumes:
             #- ./:/usr/src/server/
             - ./logs/server.log:/usr/src/server/server.log
@@ -21,9 +23,14 @@ services:
         ports:
             - "5432"
         environment:
-            POSTGRES_PASSWORD: docNxgres
-            POSTGRES_USER: docNxgres
-            POSTGRES_DB: docNxgres
+            #NOTE: default DB_DEV_PASS value could be changed in .env
+            #POSTGRES_PASSWORD: ${DB_DEV_PASS}
+            #POSTGRES_USER: ${DB_DEV_USER}
+            #POSTGRES_DB: ${DB_DEV_NAME}
+            #NOTE: default DB_PROD_PASS value should be changed in .env
+            POSTGRES_PASSWORD: ${DB_PROD_PASS}
+            POSTGRES_USER: ${DB_PROD_USER}
+            POSTGRES_DB: ${DB_PROD_NAME}
         volumes:
             - app-db-data:/var/lib/postgresql/data
         restart: always
