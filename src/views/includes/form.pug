@@ -2,9 +2,9 @@ form
     p Create, read & delete 1-128 character entries to confirm the connection, via the reverse proxy & application server containers, to the database container.
     label(for="form-entry") Entry
     input#form-entry(type="text" name="entry")
-    p.form__note
+    p
     input(type="hidden" name="_csrf" value=csrfToken)
     button#form-create Create
     button#form-read-all Read all
     button#form-delete-all Delete all
-    p.form__note
+    p
