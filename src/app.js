@@ -58,7 +58,10 @@ app.use(helmet());
 
 //app.use(express.static(path.resolve(__dirname, 'public')));
 
-const logStream = fs.createWriteStream('server.log', { flags: 'a' });
+const logStream = fs.createWriteStream(
+    path.resolve(__dirname, '../logs/server.log'),
+    { flags: 'a' }
+);
 app.use(morgan(
     ':date[web] :method :url :status :res[content-length] :response-time ms',
     { stream: logStream }

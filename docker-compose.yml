@@ -15,7 +15,7 @@ services:
             SERVER_PORT: 3000
         volumes:
             #- ./:/usr/src/server/
-            - ./logs/server.log:/usr/src/server/server.log
+            - ./logs/server.log:/usr/src/server/logs/server.log
         restart: always
     db:
         container_name: app-db
