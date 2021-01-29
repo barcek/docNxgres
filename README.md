@@ -81,7 +81,7 @@ The default is production.
 
 For development mode, uncomment line 10 - `dockerfile: Dockerfile_dev` - and comment out line 11 - `dockerfile: Dockerfile_prod`.
 
-For development, it is also possible to uncomment line 15 - `./:/usr/src/server/` - to allow changes in the source code on the host system to be applied within the container. This allows `nodemon` to be restarted by making a file change, which may be required if the application server container is ready before the database.
+For development, it is also possible to uncomment line 17 - `./:/usr/src/server/` - to allow changes in the source code on the host system to be applied within the container. This allows `nodemon` to be restarted by making a file change, which may be required if the application server container is ready before the database. Also commenting out line 18 - `./logs/server.log:/usr/src/server/server.log` - will prevent an unnecessary 'server.log' folder being created.
 
 If different database settings are required for development, these can be set in the corresponding environment variables in the '.env' file. Those variables can then be uncommented in the file 'docker-compose.yml' and the alternate variables for production commented out.
 
