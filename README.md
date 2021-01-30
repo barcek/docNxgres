@@ -12,9 +12,9 @@ The whole is intended as a working template for similar setups and a sandbox for
     - [Development & production](#development--production)
     - [Running the application server alone](#running-the-application-server-alone)
 - [Notes on the services](#notes-on-the-services)
-    - [app-proxy (Nginx reverse proxy server)](#app-proxy--nginx-reverse-proxy-server)
-    - [app-server (Express.js application server)](#app-server--express-js-application-server)
-    - [app-db (PostgreSQL database)](#app-db--postgresql-database)
+    - [app-proxy (Nginx reverse proxy server)](#app-proxy-nginx-reverse-proxy-server)
+    - [app-server (Express.js application server)](#app-server-expressjs-application-server)
+    - [app-db (PostgreSQL database)](#app-db-postgresql-database)
 
 ## Getting started
 
