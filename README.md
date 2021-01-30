@@ -4,23 +4,21 @@ A three-container back end using docker-compose, with one container each for an 
 
 The setup serves a simple static front end demonstrating the flow of data from the client through the reverse proxy and application server to the database.
 
-The whole is intended as a working template for similar setups and a sandbox for experimentation with more advanced features and interactions.
+The whole is intended as a working template for similar setups and a sandbox for experimentation with more advanced features and interactions. In certain areas it provides as options one or more additional lines commented out, and includes comments on choices available and those made for this version.
 
 - [Getting started](#getting-started)
 - [Environment & mode](#environment--mode)
     - [Environment variables](#environment-variables)
     - [Development & production](#development--production)
     - [Running the application server alone](#running-the-application-server-alone)
+- [Notes on the services](#notes-on-the-services)
+    - [app-proxy (Nginx reverse proxy server)](#app-proxy--nginx-reverse-proxy-server)
+    - [app-server (Express.js application server)](#app-server--express-js-application-server)
+    - [app-db (PostgreSQL database)](#app-db--postgresql-database)
 
 ## Getting started
 
 You'll need Docker installed.
-
-The specific Docker images used can be pulled from Docker Hub with the following command:
-
-```shell
-docker pull node:15.4.0-alpine3.10 && docker pull postgres:13.1-alpine && docker pull nginx:1.19.6-alpine
-```
 
 To create and run the containers, clone this repository to a new directory and at the root of that directory run the following:
 
@@ -34,6 +32,14 @@ To remove the containers, run the following:
 
 ```shell
 docker-compose down
+```
+
+In the event that one or more of the three Docker images used is not pulled automatically from Docker Hub, the appropriate `docker pull` command can be used. For the specific images used:
+
+```shell
+docker pull node:15.4.0-alpine3.10
+docker pull postgres:13.1-alpine
+docker pull nginx:1.19.6-alpine
 ```
 
 To list the current images, containers and volumes, run the following command:
@@ -81,7 +87,7 @@ The default is production.
 
 For development mode, uncomment line 10 - `dockerfile: Dockerfile_dev` - and comment out line 11 - `dockerfile: Dockerfile_prod`.
 
-For development, it is also possible to uncomment line 17 - `./:/usr/src/server/` - to allow changes in the source code on the host system to be applied within the container. This allows `nodemon` to be restarted by making a file change, which may be required if the application server container is ready before the database. Also commenting out line 18 - `./logs/server.log:/usr/src/server/server.log` - will prevent an unnecessary 'server.log' folder being created.
+For development, it is also possible to uncomment line 17 - `./:/usr/src/server/` - to allow changes in the source code on the host system to be applied within the container. This allows `nodemon` to be restarted by making a file change, which may be required if the application server container is ready before the database.
 
 If different database settings are required for development, these can be set in the corresponding environment variables in the '.env' file. Those variables can then be uncommented in the file 'docker-compose.yml' and the alternate variables for production commented out.
 
@@ -103,3 +109,20 @@ Otherwise, run:
 npm run prod
 ```
 
+## Notes on the services
+
+### app-proxy (Nginx reverse proxy server)
+
+The 'nginx.conf' configuration file for the Nginx reverse proxy is mounted into the container. Changes made outside of the container can be applied within by restarting the containers.
+
+- At the top of 'nginx.conf', `user` is set to `nobody`, but an alternative user may be preferred.
+- Around midway down 'nginx.conf', logging is set to a light level. The file 'proxy_access.log' uses a custom `brief_format`. The line for error logging into 'proxy_error.log' is commented out as an equivalent brief format cannot trivially be applied. The intention here is to avoid data collection issues by default, but if greater collection is required, the log format can be extended or reverted, the error logging line uncommented and a bind mount for 'proxy_error.log' added to 'docker-compose.yml' as for the access log.
+- In the server block in 'nginx.conf', the reverse proxy is set to listen on port 80. In the file 'docker-compose.yml', port 80 is mapped to port 8080 to avoid conflict, but this may need to be changed.
+
+### app-server (Express.js application server)
+
+To follow.
+
+### app-db (PostgreSQL database)
+
+To follow.
