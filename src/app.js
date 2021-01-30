@@ -3,11 +3,9 @@
 */
 
 const path = require('path');
-const fs = require('fs');
 
 const express = require('express');
 const helmet = require('helmet');
-const morgan = require('morgan');
 const pug = require('pug');
 
 /*
@@ -23,6 +21,7 @@ const csurf = require('csurf');
 
 //const { SVR, SSN } = require(path.resolve(__dirname, './config'));
 const { SVR } = require(path.resolve(__dirname, './config'));
+const { logger } = require(path.resolve(__dirname, './log'));
 
 /*
     Initialization
@@ -34,12 +33,12 @@ const app = express();
     Error handlers
 */
 
-process.on("uncaughtException", (err) => {
+process.on("uncaughtException", err => {
     console.log(err);
     process.exit(1);
 });
 
-process.on("unhandledRejection", (err) => {
+process.on("unhandledRejection", err => {
     console.log(err);
     process.exit(1);
 });
@@ -49,6 +48,7 @@ process.on("unhandledRejection", (err) => {
 */
 
 app.use(helmet());
+app.use(logger);
 
 /*
     For static file serving, choice of reverse proxy or
@@ -57,15 +57,6 @@ app.use(helmet());
 */
 
 //app.use(express.static(path.resolve(__dirname, 'public')));
-
-const logStream = fs.createWriteStream(
-    path.resolve(__dirname, '../logs/server.log'),
-    { flags: 'a' }
-);
-app.use(morgan(
-    ':date[web] :method :url :status :res[content-length] :response-time ms',
-    { stream: logStream }
-));
 
 app.set('views', path.resolve(__dirname, 'views'));
 app.set('view engine', 'pug');
