@@ -14,8 +14,8 @@ const app = require(path.resolve(__dirname, 'app.js'));
 */
 
 const CPUs = os.cpus().length;
-const multiplier = 1;
-const maxProcesses = CPUs * multiplier;
+const multiplier = parseFloat(SVR.MULTIPLIER);
+const maxProcesses = Math.floor(CPUs * multiplier);
 
 if (cluster.isMaster) {
     for (let i = 0; i < maxProcesses; i++) {

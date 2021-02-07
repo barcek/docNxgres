@@ -15,8 +15,9 @@ require('dotenv').config();
 */
 
 const {
-    PROJECT_NAME,
+    PROJECT_NAME = '',
     NODE_ENV = 'development',
+    SERVER_MULTIPLIER = 1,
     SERVER_PORT = 3000,
     //SESSION_NAME = 'session',
     //SESSION_SECRET, //NOTE: default value should be changed in .env
@@ -45,6 +46,7 @@ module.exports = {
     },
     SVR: {
         IN_PROD,
+        MULTIPLIER: SERVER_MULTIPLIER,
         PORT: SERVER_PORT
     },
     /*
