@@ -139,3 +139,17 @@ For development, it is possible to allow changes in the source code on the host 
 ### app-db (PostgreSQL database)
 
 To follow.
+
+## Development plan
+
+The following are possible next steps in the development of the code base. The general medium-term aim is a more fully-featured, production-ready template which remains useful as an aid to learning. Pull requests are welcome for these and any other potential improvements.
+
+- implement a production-grade session store
+- extend the demonstration REST API to include further CRUD operations and more complex queries
+- provide a parallel GraphQL implementation
+- integrate a data structure cache such as Redis for database results
+- include error logging in the application server log stream
+- include unit tests
+- add rate limiting to the reverse proxy server
+- add file caching to the reverse proxy server
+- migrate the project to TypeScript, retaining optional use of JavaScript only for ease of access
