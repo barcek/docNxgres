@@ -1,10 +1,10 @@
 # docNxgres
 
-A three-container back end using docker-compose, with one container each for an Nginx reverse proxy, an Express.js server and a PostgreSQL database.
+A three-container back end using Docker Compose, with one container each for an Nginx reverse proxy server, an Express.js application server and a PostgreSQL database.
 
 The setup serves a simple static front end demonstrating the flow of data from the client through the reverse proxy and application server to the database.
 
-The whole is intended as a working template for similar setups and a sandbox for experimentation with more advanced features and interactions.
+The whole is intended as a working template for similar setups and a sandbox for learning and experimentation with more advanced features and interactions.
 
 It is not fully production ready, in the absence of a production ready session store for example. See [Notes on the services](#notes-on-the-services) below for more information.
 
@@ -72,7 +72,7 @@ If permissions for Docker are not set up, each of the `docker` commands above ca
 
 Environment variables are set in five files.
 
-The root directory contains a '.env' file with environment variables. For the database, there are two sets of variables, one for development and one for production. The majority of the variables contain placeholder values. For use in production, the default production password value should be changed.
+The root directory contains a '.env' file with environment variables. For the database, there are two sets of variables, one for development mode and one for production mode. The majority of the variables contain placeholder values. For use in production, the default production password value should be changed.
 
 Also in the root directory are two Dockerfiles, one for development and one for production. Each sets the environment variable 'NODE_ENV' to the corresponding value.
 
@@ -123,22 +123,35 @@ The 'nginx.conf' configuration file for the Nginx reverse proxy is mounted into 
 - Around midway down 'nginx.conf', logging is set to a light level. The file 'proxy_access.log' uses a custom `brief_format`. The line for error logging into 'proxy_error.log' is commented out as an equivalent brief format cannot trivially be applied. The intention here is to avoid data collection issues by default, but if greater collection is required, the log format can be modified, the error logging line uncommented and/or a bind mount for 'proxy_error.log' added to 'docker-compose.yml' as for the access log.
 - In the server block in 'nginx.conf', the reverse proxy is set to listen on port 80. In the file 'docker-compose.yml', port 80 is mapped to port 8080 to avoid conflict, but this may need to be changed.
 
+Reading up on (the Nginx image)[https://hub.docker.com/_/nginx] is recommended.
+
 ### app-server (Express.js application server)
 
 As described in (Environment variables)[#environment-variables] above, the file 'src/config/index.js' accesses the '.env' file using the `dotenv` package and exports all relevant environment variables for use elsewhere in the application server code.
 
 For development, it is possible to allow changes in the source code on the host system to be applied within the container (see (Development & production)[#development--production] above).
 
-- The file 'src/index.js' is the entrypoint for the app, using the `cluster` module to start additional processes based on CPUs and the 'SERVER_MULTIPLIER' environment variable.
+- The file 'src/index.js' is the entrypoint for the app, using the `cluster` module to start additional processes based on CPUs and the `SERVER_MULTIPLIER` environment variable.
 - The file 'src/app.js' contains several comments explaining choices available and made for this version.
     1. The `csurf` package providing protection against CSRF requires the use of the `cookie-parser` or the `express-session` package. Here `cookie-parser` package has been chosen, for greater simplicity and in line with the approach to data collection issues taken also with logging (see below). However, 'src/app.js' contains lines also for `express-session`, specifically lines requiring the package, importing the `SSN` environment variables for session configuration, for the configuration itself and for the `csurf` middleware. These lines are commented out, available as an alternative, albeit with additional changes needed. The configuration for both middlewares assumes the use of HTTPS in production. If `express-session` were to be used in production, the Nginx reverse proxy server would require directives for `X-Forwarded` headers and an alternative session store would need to be used in place of the non-production MemoryStore. While MemoryStore does allow the application server to run if the `cluster` module is not used, e.g. if `app.listen` is applied in 'app.js' and 'index.js' omitted, a warning is given.
     2. With the default three-container setup, static files are served from the Nginx reverse proxy server. However, 'src/app.js' does contain a line for static serving via Express, by means of the `express.static` middleware. This line is commented out, available as an alternative when the Nginx container is not in use.
     3. The file assumes that data posted from client is sent as a JSON string. However, both 'src/app.js' and 'src/public/script.js' contain lines for use of URI encoding. These lines are commented out, available as an alternative.
 - The file 'src/app.js' also requires the `logger` middleware from the 'log' folder, using the `morgan` package. As with the reverse proxy server, logging is set to a light level (see [app-proxy (Nginx reverse proxy server)](#app-proxy-nginx-reverse-proxy-server) above). The intention here is to avoid data collection issues by default, but if greater collection is required, the log format can be modified. The 'log' folder also contains the `addLogEntry` function for use in error logging.
 
+Reading up on (the Node.js image)[https://hub.docker.com/_/node] is recommended.
+
 ### app-db (PostgreSQL database)
 
-To follow.
+As described in (Environment variables)[#environment-variables] above, three of the database variables set in '.env' are used in 'docker-compose.yml' to initialize the database container.
+
+There are two sets of variables, one for development mode and one for production mode. The majority of the variables contain placeholder values. For use in production, the default production password value should be changed.
+
+The environment variables `POSTGRES_USER` and `POSTGRES_PASSWORD` are required to set up a superuser for the container, while `POSTGRES_DB` is optional, used to provide a different name for the default database created when the container is run.
+
+- If not already present in the database, an 'entries' table is created in the database by code in the file 'src/db/entries.js' in the application server container.
+- In the file 'docker-compose.yml', the 'db' service is assigned a volume named 'app-db-data' in which data is persisted between uses of the container. If no longer needed, this volume can be removed (see [Getting started](#getting-started) above).
+
+Reading up on (the PostgreSQL image)[https://hub.docker.com/_/postgres] is recommended.
 
 ## Development plan
 
