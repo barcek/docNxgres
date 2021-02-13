@@ -39,8 +39,11 @@ services:
         image: nginx:1.19.6-alpine
         ports:
             - "8080:80"
+        environment:
+            LOG_FORMAT: ${LOG_FORMAT}
         volumes:
             - ./nginx.conf:/etc/nginx/nginx.conf
+            - ./default.conf.template:/etc/nginx/templates/default.conf.template
             - ./logs/proxy_access.log:/var/log/nginx/proxy_access.log
             - ./src/public:/var/www
         restart: always

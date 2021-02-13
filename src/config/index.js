@@ -22,6 +22,7 @@ const {
     //SESSION_NAME = 'session',
     //SESSION_SECRET, //NOTE: default value should be changed in .env
     //SESSION_MAXAGE = 3600000, //1000 * 60 * 60 = 1 hour
+    LOG_FORMAT = 'discreet',
     DB_DEV_USER,
     DB_DEV_PASS, //NOTE: default value could be changed in .env
     DB_DEV_HOST,
@@ -48,6 +49,9 @@ module.exports = {
         IN_PROD,
         MULTIPLIER: SERVER_MULTIPLIER,
         PORT: SERVER_PORT
+    },
+    LOG: {
+        FORMAT: LOG_FORMAT
     },
     /*
     SSN: {
