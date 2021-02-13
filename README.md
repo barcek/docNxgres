@@ -79,9 +79,10 @@ Also in the root directory are two Dockerfiles, one for development and one for 
 Finally, the root directory contains the file 'docker-compose.yml', which does the following:
 
 - sets the `SERVER_PORT` environment variable;
-- uses three of the database variables set in '.env' to initialize the database container, whether for development or production, with the alternate three commented out (see [Development & production](#development--production) below).
+- uses three of the database variables set in '.env' to initialize the database container, whether for development or production, with the alternate three commented out (see [Development & production](#development--production) below);
+- passes the `LOG_FORMAT` environment variable to the reverse proxy server container.
 
-The file 'src/config/index.js' accesses the '.env' file using the `dotenv` package. The applicable set of database variables, whether for development or production, is selected using the value of the 'NODE_ENV' environment variable. `NODE_ENV` is also used to set an `IN_PROD` environment variable. All relevant variables are then exported for use elsewhere in the application server code.
+The file 'src/config/index.js' accesses the '.env' file using the `dotenv` package. The applicable set of database variables, whether for development or production, is selected using the value of the `NODE_ENV` environment variable. `NODE_ENV` is also used to set an `IN_PROD` environment variable. All relevant variables are then exported for use elsewhere in the application server code.
 
 ### Development & production
 
@@ -117,11 +118,11 @@ npm run prod
 
 ### app-proxy (Nginx reverse proxy server)
 
-The 'nginx.conf' configuration file for the Nginx reverse proxy is mounted into the container. Changes made outside of the container can be applied within by restarting the containers.
+The 'nginx.conf' and 'default.conf.template' configuration files for the Nginx reverse proxy are mounted into the container. Changes made outside of the container can be applied within by restarting the containers.
 
 - At the top of 'nginx.conf', `user` is set to `nobody`, but an alternative user may be preferred.
-- Around midway down 'nginx.conf', logging is set to a light level. The file 'proxy_access.log' uses a custom `brief_format`. The line for error logging into 'proxy_error.log' is commented out as an equivalent brief format cannot trivially be applied. The intention here is to avoid data collection issues by default, but if greater collection is required, the log format can be modified, the error logging line uncommented and/or a bind mount for 'proxy_error.log' added to 'docker-compose.yml' as for the access log.
-- In the server block in 'nginx.conf', the reverse proxy is set to listen on port 80. In the file 'docker-compose.yml', port 80 is mapped to port 8080 to avoid conflict, but this may need to be changed.
+- Around midway down 'nginx.conf' and in 'default.conf.template', logging is set to a light level. Specifially, in 'nginx.conf', a custom `discreet` log format is defined, while in 'default.conf.template', the log file 'proxy_access.log' has its format set via the `LOG_FORMAT` environment variable to this `discreet` format. In 'nginx.conf', the line for error logging into 'proxy_error.log' has been commented out as an equivalent discreet format cannot trivially be applied. The intention here is to avoid data collection issues by default, but if greater collection is required, the log format can be modified or one or more new formats added, the error logging line uncommented and moved to 'default.conf.template' and/or a bind mount for 'proxy_error.log' added to 'docker-compose.yml' as for the access log.
+- In the server block in 'default.conf.template', the reverse proxy is set to listen on port 80. In the file 'docker-compose.yml', port 80 is mapped to port 8080 to avoid conflict, but this may need to be changed.
 
 Reading up on [the Nginx image](https://hub.docker.com/_/nginx) is recommended.
 
@@ -136,7 +137,7 @@ For development, it is possible to allow changes in the source code on the host 
     1. The `csurf` package providing protection against CSRF requires the use of the `cookie-parser` or the `express-session` package. Here `cookie-parser` package has been chosen, for greater simplicity and in line with the approach to data collection issues taken also with logging (see below). However, 'src/app.js' contains lines also for `express-session`, specifically lines requiring the package, importing the `SSN` environment variables for session configuration, for the configuration itself and for the `csurf` middleware. These lines are commented out, available as an alternative, albeit with additional changes needed. The configuration for both middlewares assumes the use of HTTPS in production. If `express-session` were to be used in production, the Nginx reverse proxy server would require directives for `X-Forwarded` headers and an alternative session store would need to be used in place of the non-production MemoryStore. While MemoryStore does allow the application server to run if the `cluster` module is not used, e.g. if `app.listen` is applied in 'app.js' and 'index.js' omitted, a warning is given.
     2. With the default three-container setup, static files are served from the Nginx reverse proxy server. However, 'src/app.js' does contain a line for static serving via Express, by means of the `express.static` middleware. This line is commented out, available as an alternative when the Nginx container is not in use.
     3. The file assumes that data posted from client is sent as a JSON string. However, both 'src/app.js' and 'src/public/script.js' contain lines for use of URI encoding. These lines are commented out, available as an alternative.
-- The file 'src/app.js' also requires the `logger` middleware from the 'log' folder, using the `morgan` package. As with the reverse proxy server, logging is set to a light level (see [app-proxy (Nginx reverse proxy server)](#app-proxy-nginx-reverse-proxy-server) above). The intention here is to avoid data collection issues by default, but if greater collection is required, the log format can be modified. The 'log' folder also contains the `addLogEntry` function for use in error logging.
+- The file 'src/app.js' also requires the `logger` middleware from the 'log' folder, using the `morgan` package. As with the reverse proxy server, logging is set to a light level (see [app-proxy (Nginx reverse proxy server)](#app-proxy-nginx-reverse-proxy-server) above). The intention here is to avoid data collection issues by default, but if greater collection is required, the log format can be modified, one of the `morgan` presets listed in 'src/log/index.js' used or one or more new formats added. The 'log' folder also contains the `addLogEntry` function for use in error logging.
 
 Reading up on [the Node.js image](https://hub.docker.com/_/node) is recommended.
 
