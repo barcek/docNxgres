@@ -1,7 +1,7 @@
 {
-  "name": "docNxgres",
+  "name": "docNxgres (application server)",
   "version": "1.5.0",
-  "description": "containerized back end | docker-compose, Nginx reverse proxy, Express.js server & PostgreSQL database",
+  "description": "simple application server, part of a three-container working template back end using Docker Compose and including an Nginx reverse proxy server & PostgreSQL database",
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon src/index.js",
@@ -15,17 +15,22 @@
     "reverse proxy",
     "Node.js",
     "Express.js",
+    "application server",
     "PostgreSQL",
-    "database"
+    "database",
+    "template"
   ],
   "author": "barcek",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/barcek/docNxgres.git"
+  },
   "dependencies": {
     "cookie-parser": "^1.4.5",
     "csurf": "^1.11.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "express-session": "^1.17.1",
     "helmet": "^4.2.0",
     "morgan": "^1.10.0",
     "pg": "^8.4.1",
