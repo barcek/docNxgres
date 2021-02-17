@@ -9,32 +9,45 @@
 /* Custom properties */
 
 :root {
-    --background: white;
-    --foreground: black;
-    --near: #444;
-    --far: #aaa;
-    --shadow-inner: #777;
-    --shadow-outer: #777;
+    --background: rgb(252, 248, 255);
+    --foreground: rgb(36, 36, 40);
+    --near: #333;
+    --far: #ddd;
+    --edge-upper: #aaa;
+    --edge-lower: #444;
+    --shadow: #aaa;
+    --primary: midnightblue;
+    --secondary: purple;
     --warning: maroon;
 }
 
 /* Colour theming */
 
 .theme--dark {
-    --background: black;
-    --foreground: white;
-    --shadow-inner: white;
-    --shadow-outer: black;
+    --background: rgb(36, 36, 40);
+    --foreground: rgb(252, 248, 255);
+    --near: #ddd;
+    --far: #333;
+    --edge-upper: #aaa;
+    --edge-lower: #444;
+    --shadow: rgb(36, 36, 32);
+    --primary: blue;
+    --secondary: pink;
     --warning: orangered;
 }
 
 @media screen and (prefers-color-scheme: dark) {
 
     :root {
-        --background: black;
-        --foreground: white;
-        --shadow-inner: white;
-        --shadow-outer: black;
+        --background: rgb(36, 36, 40);
+        --foreground: rgb(252, 248, 255);
+        --near: #ddd;
+        --far: #333;
+        --edge-upper: #aaa;
+        --edge-lower: #444;
+        --shadow: rgb(36, 36, 40);
+        --primary: blue;
+        --secondary: pink;
         --warning: orangered;
     }
 }
@@ -76,30 +89,30 @@ button {
     padding: 0.5rem;
     font-family: inherit;
     font-size: inherit;
-    border: 1px solid var(--far);
+    border: 1px solid var(--edge-upper);
     border-radius: 3px;
 }
 
 input {
-    border-top-color: var(--near);
-    border-left-color: var(--near);
-    box-shadow: inset 1px 1px 2px var(--shadow-inner);
+    border-top-color: var(--edge-lower);
+    border-left-color: var(--edge-lower);
+    box-shadow: inset 1px 1px 2px var(--shadow);
 }
 
 button {
     background-color: inherit;
     color: inherit;
-    border-right-color: var(--near);
-    border-bottom-color: var(--near);
-    box-shadow: 1px 1px 2px var(--shadow-outer);
+    border-right-color: var(--edge-lower);
+    border-bottom-color: var(--edge-lower);
+    box-shadow: 1px 1px 2px var(--shadow);
 }
 
 button:active {
-    border-top-color: var(--near);
-    border-left-color: var(--near);
-    border-right-color: var(--far);
-    border-bottom-color: var(--far);
-    box-shadow: inset 1px 1px 2px var(--shadow-inner);
+    border-top-color: var(--edge-lower);
+    border-left-color: var(--edge-lower);
+    border-right-color: var(--edge-upper);
+    border-bottom-color: var(--edge-upper);
+    box-shadow: inset 1px 1px 2px var(--shadow);
 }
 
 /* Major elements */
@@ -192,3 +205,4 @@ form p {
         margin: 0 auto;
     }
 }
+
