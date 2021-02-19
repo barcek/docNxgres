@@ -13,19 +13,24 @@ const app = require(path.resolve(__dirname, 'app.js'));
     Process creation
 */
 
+/* determine max number of listener processes */
 const CPUs = os.cpus().length;
 const multiplier = parseFloat(SVR.MULTIPLIER);
-const maxProcesses = Math.floor(CPUs * multiplier);
+const maxListeners = Math.floor(CPUs * multiplier);
 
+/* if initial process, fork new processes up to max; if new process, listen */
 if (cluster.isMaster) {
-    for (let i = 0; i < maxProcesses; i++) {
+    for (let i = 0; i < maxListeners; i++) {
         cluster.fork();
     };
 } else {
-    app.listen(SVR.PORT, () => { console.log(`App listening on port ${SVR.PORT}...`); });
+    app.listen(SVR.PORT, () => {
+        console.log(`App server process listening on port ${SVR.PORT}...`);
+    });
 };
 
+/* handle listener exit */
 cluster.on('exit', (process) => {
-    console.log(`App ${process.id} down.`);
+    console.log(`App server process ${process.id} exited.`);
     cluster.fork();
 });
