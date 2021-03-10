@@ -5,20 +5,20 @@
 const path = require('path');
 
 const { commaSeparate } = require(path.resolve(__dirname, '../utils'));
-const { pool } = require(path.resolve(__dirname, './pool.js'));
+const { pool: defaultPool } = require(path.resolve(__dirname, './pool.js'));
 
 /*
     Utility functions
 */
 
-const buildVars = columns => columns.map((column, index) => `\$${index + 1}`);
+const buildVars = crudColNames => crudColNames.map((column, index) => `\$${index + 1}`);
 
-const buildVarString = columns => commaSeparate(buildVars(columns));
+const buildVarString = crudColNames => commaSeparate(buildVars(crudColNames));
 
-const buildPairString = columns => {
+const buildPairString = crudColNames => {
     const pairedItems = [];
-    columns.forEach((column, index) => {
-        pairedItems.push(`${column} = ${buildVars(columns)[index]}`);
+    crudColNames.forEach((column, index) => {
+        pairedItems.push(`${column} = ${buildVars(crudColNames)[index]}`);
     });
     return commaSeparate(pairedItems);
 };
@@ -27,25 +27,62 @@ const buildPairString = columns => {
     Constructor function
 */
 
-function CRUD(table, columns) {
+function CRUD(tableName, crudColNames, pool=defaultPool) {
 
-    this.colString = commaSeparate(columns);
-    this.varString = buildVarString(columns);
-    this.pairString = buildPairString(columns);
+    this.label = crudColNames.join('-');
+
+    this.colString = commaSeparate(crudColNames);
+    this.varString = buildVarString(crudColNames);
+    this.pairString = buildPairString(crudColNames);
 
     this.templates = {
-        create: `INSERT INTO ${table} (${this.colString}) VALUES (${this.varString}) RETURNING *;`,
-        readById: `SELECT * FROM ${table} WHERE id = $1;`,
-        readAll: `SELECT * FROM ${table};`,
-        update: `UPDATE ${table} SET ${this.pairString} WHERE id = $${columns.length + 1} RETURNING *;`,
-        deleteById: `DELETE FROM ${table} WHERE id = $1;`,
-        deleteAll: `DELETE FROM ${table};`
+        create: {
+            text: `INSERT INTO ${tableName} (${this.colString}) VALUES (${this.varString}) RETURNING *;`,
+            expected: crudColNames.length
+        },
+        readById: {
+            text: `SELECT * FROM ${tableName} WHERE id = $1;`,
+            expected: 1
+        },
+        readAll: {
+            text: `SELECT * FROM ${tableName};`,
+            expected: 0
+        },
+        update: {
+            text: `UPDATE ${tableName} SET ${this.pairString} WHERE id = $${crudColNames.length + 1} RETURNING *;`,
+            expected: crudColNames.length + 1
+        },
+        deleteById: {
+            text: `DELETE FROM ${tableName} WHERE id = $1;`,
+            expected: 1
+        },
+        deleteAll: {
+            text: `DELETE FROM ${tableName};`,
+            expected: 0
+        }
     };
 
-    this.run = function(operation, values) {
+    this.summarize = operation => {
+        const expected = this.templates[operation].expected;
+        const text = this.templates[operation].text;
+        return `${tableName} ${this.label} '${operation}' expects ${expected} value(s) for query '${text}'`;
+    };
+
+    this.summarizeAll = () => {
+        const summaries = [];
+        for (let key of Object.keys(this.templates)) {
+            summaries.push(this.summarize(key));
+        };
+        return summaries.join('\n');
+    };
+
+    this.run = (operation, values=[]) => {
+        if (this.templates[operation].expected != values.length) {
+            throw new Error(`${this.summarize(operation)}, but received ${values.length}`)
+        };
         return pool.query({
             name: operation,
-            text: this.templates[operation],
+            text: this.templates[operation].text,
             values: values
         });
     };

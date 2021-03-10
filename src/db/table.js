@@ -5,24 +5,28 @@
 const path = require('path');
 
 const { commaSeparate } = require(path.resolve(__dirname, '../utils'));
-const { pool } = require(path.resolve(__dirname, './pool.js'));
-const { CRUD } = require(path.resolve(__dirname, './crud.js'));
+const { pool: defaultPool } = require(path.resolve(__dirname, './pool.js'));
+const { CRUD: defaultCRUD } = require(path.resolve(__dirname, './crud.js'));
 
 /*
     Constructor function
 */
 
-function Table(name, tableColumns) {
+function Table(tableName, tableColNames, pool=defaultPool, CRUD=defaultCRUD) {
 
-    this.tableColString = commaSeparate(tableColumns);
-    this.template = `CREATE TABLE IF NOT EXISTS ${name} (${this.tableColString});`;
+    this.createTable = async (template) => {
+        const response = await pool.query(template);
+        return response;
+    };
 
-    (async function(template) {
-        await pool.query(template);
-    })(this.template)
+    this.template = `CREATE TABLE IF NOT EXISTS ${tableName} (${commaSeparate(tableColNames)});`;
+    this.response = this.createTable(this.template);
+    this.cruds = {};
 
-    this.generateCRUD = function(queryColumns) {
-        return new CRUD(name, queryColumns);
+    this.generateCRUD = (crudColNames) => {
+        const crud = new CRUD(tableName, crudColNames);
+        this.cruds[crud.label] = crud;
+        return crud;
     };
 };
 
