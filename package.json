@@ -1,11 +1,12 @@
 {
-  "name": "docNxgres (application server)",
+  "name": "docNxgres",
   "version": "1.5.2",
   "description": "simple application server, part of a three-container working template back end using Docker Compose and including an Nginx reverse proxy server & PostgreSQL database",
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon src/index.js",
-    "start:prod": "node src/index.js"
+    "start:prod": "node src/index.js",
+    "test": "mocha"
   },
   "keywords": [
     "Docker",
@@ -38,6 +39,8 @@
     "validator": "^13.1.17"
   },
   "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^8.3.2",
     "nodemon": "^2.0.6"
   }
 }
