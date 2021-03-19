@@ -11,6 +11,7 @@ It is not fully production ready, in the absence of a production ready session s
 In certain areas it provides as options one or more additional lines commented out, and includes comments on choices available and those made for this version.
 
 - [Getting started](#getting-started)
+    - [Unit tests](#unit-tests)
 - [Environment & mode](#environment--mode)
     - [Environment variables](#environment-variables)
     - [Development & production](#development--production)
@@ -65,6 +66,20 @@ docker volume rm docnxgres_app-db-data
 ```
 
 If permissions for Docker are not set up, each of the `docker` commands above can be preceded by `sudo`.
+
+### Unit tests
+
+The unit tests use the npm packages `mocha` and `chai` as dev dependencies and can be run with the following command:
+
+```shell
+mocha
+```
+
+This command is the current content of the 'test' script in the 'package.json' file, which can be run with the following:
+
+```shell
+npm test
+```
 
 ## Environment & mode
 
