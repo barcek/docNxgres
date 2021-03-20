@@ -7,7 +7,7 @@ const path = require('path');
 const assert = require('chai').assert;
 
 const { vals, poolTable, CRUD } = require(path.resolve(__dirname, './db.test.js'));
-const { Table } = require(path.resolve(__dirname, '../src/db/table.js'));
+const { Table } = require(path.resolve(__dirname, '../../src/db/table.js'));
 
 /*
     Assertions

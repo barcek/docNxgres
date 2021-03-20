@@ -4,7 +4,7 @@
 
 const path = require('path');
 
-const { pool } = require(path.resolve(__dirname, '../src/db/pool.js'));
+const { pool } = require(path.resolve(__dirname, '../../src/db/pool.js'));
 
 /*
     Test values
