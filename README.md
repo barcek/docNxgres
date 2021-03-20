@@ -72,8 +72,10 @@ If permissions for Docker are not set up, each of the `docker` commands above ca
 The unit tests use the npm packages `mocha` and `chai` as dev dependencies and can be run with the following command:
 
 ```shell
-mocha
+mocha --recursive
 ```
+
+The `--recursive` flag ensures tests in subdirectories are also run.
 
 This command is the current content of the 'test' script in the 'package.json' file, which can be run with the following:
 
