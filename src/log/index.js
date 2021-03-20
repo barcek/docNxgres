@@ -23,7 +23,7 @@ const logFormat = {
 }[LOG.FORMAT];
 
 const logStream = fs.createWriteStream(
-    path.resolve(__dirname, '../../logs/server.log'),
+    path.resolve(__dirname, `../../logs/${LOG.FILENAME}`),
     { flags: 'a' }
 );
 
@@ -36,6 +36,9 @@ const logger = morgan(logFormat, { stream: logStream });
 const addLogEntry = data => {
     logStream.write(`${(new Date).toUTCString()} ${data}\n`);
 };
+
+console.log(LOG.FILENAME, logStream.path);
+addLogEntry('new filename test');
 
 /*
     Exports
