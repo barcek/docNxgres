@@ -10,14 +10,21 @@ const { logStream } = require(path.resolve(__dirname, './logstream.js'));
     Utility functions
 */
 
-const addLogEntry = data => {
-    logStream.write(`${(new Date).toUTCString()} ${data}\n`);
+const createLogUtils = (stream) => {
+    return {
+        addLogEntry: data => {
+            stream.write(`${(new Date).toUTCString()} ${data}\n`);
+        }
+    };
 };
+
+const { addLogEntry } = createLogUtils(logStream);
 
 /*
     Exports
 */
 
 module.exports = {
+    createLogUtils,
     addLogEntry
 };

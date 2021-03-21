@@ -23,7 +23,7 @@ const {
     //SESSION_SECRET, //NOTE: default value should be changed in .env
     //SESSION_MAXAGE = 3600000, //1000 * 60 * 60 = 1 hour
     LOG_FORMAT = 'discreet',
-    LOG_FILENAME = 'server.log',
+    LOG_PATH = 'logs/server.log',
     DB_DEV_USER,
     DB_DEV_PASS, //NOTE: default value could be changed in .env
     DB_DEV_HOST,
@@ -53,7 +53,7 @@ module.exports = {
     },
     LOG: {
         FORMAT: LOG_FORMAT,
-        FILENAME: LOG_FILENAME
+        PATH: LOG_PATH
     },
     /*
     SSN: {

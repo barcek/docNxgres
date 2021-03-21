@@ -11,15 +11,20 @@ const { LOG } = require(path.resolve(__dirname, '../config'));
     Log stream creation
 */
 
-const logStream = fs.createWriteStream(
-    path.resolve(__dirname, `../../logs/${LOG.FILENAME}`),
-    { flags: 'a' }
-);
+const createLogStream = function(pathToLog) {
+    return fs.createWriteStream(
+        path.resolve(__dirname, `../../${pathToLog}`),
+        { flags: 'a' }
+    );
+};
+
+const logStream = createLogStream(LOG.PATH);
 
 /*
     Exports
 */
 
 module.exports = {
+    createLogStream,
     logStream
 };
