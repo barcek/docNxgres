@@ -156,7 +156,7 @@ For development, it is possible to allow changes in the source code on the host 
     The configuration for both middlewares assumes the use of HTTPS in production. If `express-session` were to be used in production, the Nginx reverse proxy server would require directives for `X-Forwarded` headers and an alternative session store would need to be used in place of the non-production MemoryStore. While MemoryStore does allow the application server to run if the `cluster` module is not used, e.g. if `app.listen` is applied in 'app.js' and 'index.js' omitted, a warning is given.
     2. With the default three-container setup, static files are served from the Nginx reverse proxy server. However, 'src/app.js' does contain a line for static serving via Express, by means of the `express.static` middleware. This line is commented out, available as an alternative when the Nginx container is not in use.
     3. The file assumes that data posted from client is sent as a JSON string. However, both 'src/app.js' and 'src/public/script.js' contain lines for use of URI encoding. These lines are commented out, available as an alternative.
-- The file 'src/app.js' also requires the `logger` middleware from the 'log' folder, using the `morgan` package. As with the reverse proxy server, logging is set to a light level (see [app-proxy (Nginx reverse proxy server)](#app-proxy-nginx-reverse-proxy-server) above). The intention here is to avoid data collection issues by default, but if greater collection is required, the log format can be modified, one of the `morgan` presets listed in 'src/log/index.js' used or one or more new formats added. The 'log' folder also contains the `addLogEntry` function for use in error logging.
+- The file 'src/app.js' also requires the `logger` middleware from the 'log' folder, using the `morgan` package. As with the reverse proxy server, logging is set to a light level (see [app-proxy (Nginx reverse proxy server)](#app-proxy-nginx-reverse-proxy-server) above). The intention here is to avoid data collection issues by default, but if greater collection is required, the log format can be modified, one of the `morgan` presets listed in 'src/log/logger.js' used or one or more new formats added. The 'log' folder also contains the file 'utils.js' offering an `addLogEntry` function for use in error logging.
 
 Reading up on [the Node.js image](https://hub.docker.com/_/node) is recommended.
 
@@ -182,7 +182,7 @@ The following are possible next steps in the development of the code base. The g
 - provide a parallel GraphQL implementation
 - integrate a data structure cache such as Redis for database results
 - include error logging in the application server log stream
-- include unit tests
+- extend the set of unit tests & add integration tests
 - add rate limiting to the reverse proxy server
 - add file caching to the reverse proxy server
 - migrate the project to TypeScript, retaining optional use of JavaScript only for ease of access
