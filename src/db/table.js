@@ -4,7 +4,7 @@
 
 const path = require('path');
 
-const { commaSeparate } = require(path.resolve(__dirname, '../utils'));
+const { commaSpaceJoin } = require(path.resolve(__dirname, '../utils'));
 const { pool: defaultPool } = require(path.resolve(__dirname, './pool.js'));
 const { CRUD: defaultCRUD } = require(path.resolve(__dirname, './crud.js'));
 
@@ -19,7 +19,7 @@ function Table(tableName, tableColNames, pool=defaultPool, CRUD=defaultCRUD) {
         return response;
     };
 
-    this.template = `CREATE TABLE IF NOT EXISTS ${tableName} (${commaSeparate(tableColNames)});`;
+    this.template = `CREATE TABLE IF NOT EXISTS ${tableName} (${commaSpaceJoin(tableColNames)});`;
     this.response = this.createTable(this.template);
     this.cruds = {};
 

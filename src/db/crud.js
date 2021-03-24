@@ -4,7 +4,7 @@
 
 const path = require('path');
 
-const { commaSeparate } = require(path.resolve(__dirname, '../utils'));
+const { commaSpaceJoin } = require(path.resolve(__dirname, '../utils'));
 const { pool: defaultPool } = require(path.resolve(__dirname, './pool.js'));
 
 /*
@@ -13,14 +13,14 @@ const { pool: defaultPool } = require(path.resolve(__dirname, './pool.js'));
 
 const buildVars = crudColNames => crudColNames.map((column, index) => `\$${index + 1}`);
 
-const buildVarString = crudColNames => commaSeparate(buildVars(crudColNames));
+const buildVarString = crudColNames => commaSpaceJoin(buildVars(crudColNames));
 
 const buildPairString = crudColNames => {
     const pairedItems = [];
     crudColNames.forEach((column, index) => {
         pairedItems.push(`${column} = ${buildVars(crudColNames)[index]}`);
     });
-    return commaSeparate(pairedItems);
+    return commaSpaceJoin(pairedItems);
 };
 
 /*
@@ -31,7 +31,7 @@ function CRUD(tableName, crudColNames, pool=defaultPool) {
 
     this.label = crudColNames.join('-');
 
-    this.colString = commaSeparate(crudColNames);
+    this.colString = commaSpaceJoin(crudColNames);
     this.varString = buildVarString(crudColNames);
     this.pairString = buildPairString(crudColNames);
 
