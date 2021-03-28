@@ -93,7 +93,13 @@ The root directory contains a '.env' file with environment variables. For the da
 
 Also in the root directory are two Dockerfiles, one for development and one for production. Each sets the environment variable 'NODE_ENV' to the corresponding value.
 
-Finally, the root directory contains the file 'docker-compose.yml', which does the following:
+Finally, the root directory contains three 'docker-compose' files:
+
+1. 'docker-compose.yml', which has settings for the dev and prod variants with the dev variant commented out;
+2. 'docker-compose_dev.yml' for the dev variant;
+3. 'docker-compose_prod.yml'.
+
+Each of these does the following:
 
 - sets the `SERVER_PORT` environment variable;
 - uses three of the database variables set in '.env' to initialize the database container, whether for development or production, with the alternate three commented out (see [Development & production](#development--production) below);
@@ -102,6 +108,8 @@ Finally, the root directory contains the file 'docker-compose.yml', which does t
 The file 'src/config/index.js' accesses the '.env' file using the `dotenv` package. The applicable set of database variables, whether for development or production, is selected using the value of the `NODE_ENV` environment variable. `NODE_ENV` is also used to set an `IN_PROD` environment variable. All relevant variables are then exported for use elsewhere in the application server code.
 
 ### Development & production
+
+#### docker-compose.yml
 
 The file 'docker-compose.yml' specifies whether the application server image is to be built for development or for production.
 
@@ -112,6 +120,24 @@ For development mode, uncomment line 10 - `dockerfile: Dockerfile_dev` - and com
 For development, it is also possible to uncomment line 17 - `./:/usr/src/server/` - to allow changes in the source code on the host system to be applied within the container. This allows `nodemon` to be restarted by making a file change, which may be required if the application server container is ready before the database.
 
 If different database settings are required for development, these can be set in the corresponding environment variables in the '.env' file. Those variables can then be uncommented in the file 'docker-compose.yml' and the alternate variables for production commented out.
+
+#### docker-compose_dev.yml & docker-compose_prod.yml
+
+The files 'docker-compose_dev.yml' and 'docker-compose_prod.yml' each contain the settings for the corresponding variant of the file 'docker-compose.yml', avoiding the need to comment out and uncomment lines.
+
+The use of 'prod' for one of the variants is not to imply that the setup is fully production ready. See [Notes on the services](#notes-on-the-services) below for more information.
+
+To run the containers with a variant file, the `-f` flag can be used, as below:
+
+```shell
+docker-compose -f docker-compose_dev.yml up
+```
+
+To remove the containers, the standard command is enough:
+
+```shell
+docker-compose down
+```
 
 ### Running the application server alone
 
@@ -138,8 +164,8 @@ npm run prod
 The 'nginx.conf' and 'default.conf.template' configuration files for the Nginx reverse proxy are mounted into the container. Changes made outside of the container can be applied within by restarting the containers.
 
 - At the top of 'nginx.conf', `user` is set to `nobody`, but an alternative user may be preferred.
-- Around midway down 'nginx.conf' and in 'default.conf.template', logging is set to a light level. Specifially, in 'nginx.conf', a custom `discreet` log format is defined, while in 'default.conf.template', the log file 'proxy_access.log' has its format set via the `LOG_FORMAT` environment variable to this `discreet` format. In 'nginx.conf', the line for error logging into 'proxy_error.log' has been commented out as an equivalent discreet format cannot trivially be applied. The intention here is to avoid data collection issues by default, but if greater collection is required, the log format can be modified or one or more new formats added, the error logging line uncommented and moved to 'default.conf.template' and/or a bind mount for 'proxy_error.log' added to 'docker-compose.yml' as for the access log.
-- In the server block in 'default.conf.template', the reverse proxy is set to listen on port 80. In the file 'docker-compose.yml', port 80 is mapped to port 8080 to avoid conflict, but this may need to be changed.
+- Around midway down 'nginx.conf' and in 'default.conf.template', logging is set to a light level. Specifially, in 'nginx.conf', a custom `discreet` log format is defined, while in 'default.conf.template', the log file 'proxy_access.log' has its format set via the `LOG_FORMAT` environment variable to this `discreet` format. In 'nginx.conf', the line for error logging into 'proxy_error.log' has been commented out as an equivalent discreet format cannot trivially be applied. The intention here is to avoid data collection issues by default, but if greater collection is required, the log format can be modified or one or more new formats added, the error logging line uncommented and moved to 'default.conf.template' and/or a bind mount for 'proxy_error.log' added to each relevant 'docker-compose' file as for the access log.
+- In the server block in 'default.conf.template', the reverse proxy is set to listen on port 80. In each 'docker-compose' file, port 80 is mapped to port 8080 to avoid conflict, but this may need to be changed.
 
 Reading up on [the Nginx image](https://hub.docker.com/_/nginx) is recommended.
 
@@ -162,14 +188,14 @@ Reading up on [the Node.js image](https://hub.docker.com/_/node) is recommended.
 
 ### app-db (PostgreSQL database)
 
-As described in [Environment variables](#environment-variables) above, three of the database variables set in '.env' are used in 'docker-compose.yml' to initialize the database container.
+As described in [Environment variables](#environment-variables) above, three of the database variables set in '.env' are used in each 'docker-compose' file to initialize the database container.
 
 There are two sets of variables, one for development mode and one for production mode. The majority of the variables contain placeholder values. For use in production, the default production password value should be changed.
 
 The environment variables `POSTGRES_USER` and `POSTGRES_PASSWORD` are required to set up a superuser for the container, while `POSTGRES_DB` is optional, used to provide a different name for the default database created when the container is run.
 
 - If not already present in the database, an 'entries' table is created in the database by code in the file 'src/db/entries.js' in the application server container.
-- In the file 'docker-compose.yml', the 'db' service is assigned a volume named 'app-db-data' in which data is persisted between uses of the container. If no longer needed, this volume can be removed (see [Getting started](#getting-started) above).
+- In each 'docker-compose' file, the 'db' service is assigned a volume named 'app-db-data' in which data is persisted between uses of the container. If no longer needed, this volume can be removed (see [Getting started](#getting-started) above).
 
 Reading up on [the PostgreSQL image](https://hub.docker.com/_/postgres) is recommended.
 
