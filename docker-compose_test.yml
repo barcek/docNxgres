@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+    db:
+        container_name: test-db
+        image: postgres:13.1-alpine
+        ports:
+            - "2345:5432"
+        environment:
+            #NOTE: default DB_DEV_PASS value could be changed in .env
+            POSTGRES_PASSWORD: ${DB_DEV_PASS}
+            POSTGRES_USER: ${DB_DEV_USER}
+            POSTGRES_DB: ${DB_DEV_NAME}
+        volumes:
+            - test-db-data:/var/lib/postgresql/data
+        restart: always
+volumes:
+    test-db-data:

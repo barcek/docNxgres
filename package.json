@@ -6,7 +6,9 @@
   "scripts": {
     "start:dev": "nodemon src/index.js",
     "start:prod": "node src/index.js",
-    "test": "mocha --recursive"
+    "test:up": "docker-compose -f docker-compose_test.yml up",
+    "test:down": "docker-compose down && docker volume rm docnxgres_test-db-data",
+    "test": "DB_DEV_HOST=localhost DB_DEV_PORT=2345 mocha --recursive"
   },
   "keywords": [
     "Docker",
@@ -40,6 +42,7 @@
   },
   "devDependencies": {
     "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
     "mocha": "^8.3.2",
     "nodemon": "^2.0.6"
   }
