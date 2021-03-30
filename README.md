@@ -11,7 +11,7 @@ It is not fully production ready, in the absence of a production ready session s
 In certain areas it provides as options one or more additional lines commented out, and includes comments on choices available and those made for this version.
 
 - [Getting started](#getting-started)
-    - [Unit tests](#unit-tests)
+    - [Unit & integration tests](#unit--integration-tests)
 - [Environment & mode](#environment--mode)
     - [Environment variables](#environment-variables)
     - [Development & production](#development--production)
@@ -67,21 +67,31 @@ docker volume rm docnxgres_app-db-data
 
 If permissions for Docker are not set up, each of the `docker` commands above can be preceded by `sudo`.
 
-### Unit tests
+### Unit & integration tests
 
-The unit tests use the npm packages `mocha` and `chai` as dev dependencies and can be run with the following command:
+The tests use the npm packages `mocha`, `chai` and `chai-http` as dev dependencies. They assume that the test database container defined in 'dokcer-compose_test.yml' is running.
+
+The database container can be run with the following command:
 
 ```shell
-mocha --recursive
+npm run test:up
 ```
 
-The `--recursive` flag ensures tests in subdirectories are also run.
-
-This command is the current content of the 'test' script in the 'package.json' file, which can be run with the following:
+The tests can then be run using:
 
 ```shell
 npm test
 ```
+
+This script sets two environment variables to override development values defined in the '.env' file and contains the `mocha --recursive` command. The `--recursive` flag ensures tests in subdirectories are also run.
+
+When complete, the database container can be stopped with `Ctrl-C` and the containers and database volume removed using the command:
+
+```shell
+npm run test:down
+```
+
+All three scripts are among those defined in the 'package.json' file.
 
 ## Environment & mode
 
@@ -93,19 +103,20 @@ The root directory contains a '.env' file with environment variables. For the da
 
 Also in the root directory are two Dockerfiles, one for development and one for production. Each sets the environment variable 'NODE_ENV' to the corresponding value.
 
-Finally, the root directory contains three 'docker-compose' files:
+Finally, the root directory contains four 'docker-compose' files:
 
 1. 'docker-compose.yml', which has settings for the dev and prod variants with the dev variant commented out;
 2. 'docker-compose_dev.yml' for the dev variant;
-3. 'docker-compose_prod.yml'.
+3. 'docker-compose_prod.yml' for the prod variant;
+4. 'docker-compose_test.yml' for the test container.
 
-Each of these does the following:
+Each of the first three of these does the following:
 
 - sets the `SERVER_PORT` environment variable;
 - uses three of the database variables set in '.env' to initialize the database container, whether for development or production, with the alternate three commented out (see [Development & production](#development--production) below);
 - passes the `LOG_FORMAT` environment variable to the reverse proxy server container.
 
-The file 'src/config/index.js' accesses the '.env' file using the `dotenv` package. The applicable set of database variables, whether for development or production, is selected using the value of the `NODE_ENV` environment variable. `NODE_ENV` is also used to set an `IN_PROD` environment variable. All relevant variables are then exported for use elsewhere in the application server code.
+The application server file 'src/config/index.js' accesses the '.env' file using the `dotenv` package. The applicable set of database variables, whether for development or production, is selected using the value of the `NODE_ENV` environment variable. `NODE_ENV` is also used to set an `IN_PROD` environment variable. All relevant variables are then exported for use elsewhere in the application server code.
 
 ### Development & production
 
@@ -208,7 +219,7 @@ The following are possible next steps in the development of the code base. The g
 - provide a parallel GraphQL implementation
 - integrate a data structure cache such as Redis for database results
 - include error logging in the application server log stream
-- extend the set of unit tests & add integration tests
+- extend the set of unit & integration tests
 - add rate limiting to the reverse proxy server
 - add file caching to the reverse proxy server
 - migrate the project to TypeScript, retaining optional use of JavaScript only for ease of access
