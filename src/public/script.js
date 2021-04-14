@@ -7,15 +7,12 @@
     const form = doc.querySelector('form');
 
     const formEntry = form.querySelector('#form-entry');
+
     const formEntryNote = formEntry.nextElementSibling;
+    const formBtnsNote = form.lastElementChild;
 
     const formToken = form.querySelector('[name="_csrf"]');
 
-    const formCreate = form.querySelector('#form-create');
-    const formReadAll = form.querySelector('#form-read-all');
-    const formDeleteAll = form.querySelector('#form-delete-all');
-
-    const formNote = form.lastElementChild;
 
     /* Utility functions */
 
@@ -49,84 +46,81 @@
 
     /* Form functionality */
 
-    const messages = {
+    const noteContent = {
         entryAbsent: "No entry provided.",
-        formCreatePressed: 'Creating entry...',
-        formReadAllPressed: 'Reading all entries...',
-        formDeleteAllPressed: 'Deleting all entries...',
+        createBtnPressed: 'Creating entry...',
+        readAllBtnPressed: 'Reading all entries...',
+        deleteAllBtnPressed: 'Deleting all entries...',
         failure: 'Error: please try again.'
     };
 
-    const setNote = (content='', note=formNote, warn=true) => {
+    const setNote = (content='', note=formBtnsNote, warn=true) => {
         note.textContent = content;
-        warn ?
-            note.classList.add('text--warning') :
-            note.classList.remove('text--warning');
+        warn
+            ? note.classList.add('text--warning')
+            : note.classList.remove('text--warning');
     };
 
-    const useFetchEntries = (options) => {
+    const handleSubmit = (message, method, data = null) => {
+
+        setNote(message, formBtnsNote, false);
+
+        const options = {
+            method: method.toUpperCase(),
+            headers: {
+                'CSRF-Token': formToken.value
+            }
+        };
+        if (data) {
+            options.headers['Content-Type'] = data.type;
+            options.body = data.body;
+        };
+
         useFetch('/entries', options, 'JSON')
-            .then((data) => {
+            .then(data => {
                 data.result.string &&
-                    setNote(data.result.string, formNote, data.result.isError);
+                    setNote(data.result.string, formBtnsNote, data.result.isError);
             })
-            .catch((err) => {
-                setNote(messages.failure);
+            .catch(err => {
+                setNote(noteContent.failure);
             });
     };
 
-    formCreate.addEventListener('click', (event) => {
-
-        event.preventDefault();
+    const handleCreate = () => {
 
         if (!formEntry.value) {
-            setNote(messages.entryAbsent, formEntryNote);
+            setNote(noteContent.entryAbsent, formEntryNote);
             return;
         };
-
         setNote('', formEntryNote);
-        setNote(messages.formCreatePressed, formNote, false);
 
         const entry = formEntry.value;
-        //const URIString = createURIString({entry});
-        const JSONString = JSON.stringify({entry});
-        useFetchEntries({
-            method: 'POST',
-            headers: {
-                //'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Type': 'application/json',
-                'CSRF-Token': formToken.value
-            },
-            //body: URIString,
-            body: JSONString,
-            credentials: 'include'
+        /*
+        handleSubmit(noteContent.createBtnPressed, 'POST', {
+            body: createURIString({entry}),
+            type: 'application/x-www-form-urlencoded'
         });
-
+        */
+        handleSubmit(noteContent.createBtnPressed, 'POST', {
+            body: JSON.stringify({entry}),
+            type: 'application/json'
+        });
         formEntry.value = '';
-    });
+    };
 
-    formReadAll.addEventListener('click', (event) => {
-        event.preventDefault();
-        setNote(messages.formReadAllPressed, formNote, false);
-        useFetchEntries({
-            method: 'GET',
-            headers: {
-                'CSRF-Token': formToken.value
-            },
-            credentials: 'include'
-        });
-    });
+    const handleReadAll = () => {
+        handleSubmit(noteContent.readAllBtnPressed, 'GET');
+    };
 
-    formDeleteAll.addEventListener('click', (event) => {
+    const handleDeleteAll = () => {
+        handleSubmit(noteContent.deleteAllBtnPressed, 'DELETE');
+    };
+
+    form.addEventListener('click', event => {
         event.preventDefault();
-        setNote(messages.formDeleteAllPressed, formNote, false);
-        useFetchEntries({
-            method: 'DELETE',
-            headers: {
-                'CSRF-Token': formToken.value
-            },
-            credentials: 'include'
-        });
+        event.target.id === 'form-create' && handleCreate();
+        event.target.id === 'form-read-all' && handleReadAll();
+        event.target.id === 'form-delete-all' && handleDeleteAll();
     });
 
 })(window, document);
