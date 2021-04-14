@@ -1,11 +1,13 @@
 {
   "name": "docNxgres",
-  "version": "1.9.0",
+  "version": "1.9.2",
   "description": "simple application server, part of a three-container working template back end using Docker Compose and including an Nginx reverse proxy server & PostgreSQL database",
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon src/index.js",
     "start:prod": "node src/index.js",
+    "compose:dev": "docker-compose -f docker-compose_dev.yml up",
+    "compose:prod": "docker-compose -f docker-compose_prod.yml up",
     "test:up": "docker-compose -f docker-compose_test.yml up",
     "test:down": "docker-compose down && docker volume rm docnxgres_test-db-data",
     "test": "DB_DEV_HOST=localhost DB_DEV_PORT=2345 mocha --recursive"
