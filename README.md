@@ -85,6 +85,8 @@ npm test
 
 This script sets two environment variables to override development values defined in the '.env' file and contains the `mocha --recursive` command. The `--recursive` flag ensures tests in subdirectories are also run.
 
+Both scripts can be found in the file 'package.json'.
+
 When complete, the database container can be stopped with `Ctrl-C` and the containers and database volume removed using the command:
 
 ```shell
@@ -142,6 +144,12 @@ To run the containers with a variant file, the `-f` flag can be used, as below:
 
 ```shell
 docker-compose -f docker-compose_dev.yml up
+```
+
+A script containing the relevant command is available for each variant file, and both can be found in the file 'package.json'. The script for the dev variant is run with the following command:
+
+```shell
+npm run compose:dev
 ```
 
 To remove the containers, the standard command is enough:
