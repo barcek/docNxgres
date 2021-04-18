@@ -20,6 +20,7 @@ In certain areas it provides as options one or more additional lines commented o
     - [app-proxy (Nginx reverse proxy server)](#app-proxy-nginx-reverse-proxy-server)
     - [app-server (Express.js application server)](#app-server-expressjs-application-server)
     - [app-db (PostgreSQL database)](#app-db-postgresql-database)
+- [Development plan](#development-plan)
 
 ## Getting started
 
