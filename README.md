@@ -54,6 +54,12 @@ To list the current images, containers and volumes, run the following command:
 docker ps -a && docker images && docker volume ls
 ```
 
+This is also available as a script, run with the following command:
+
+```shell
+npm run compose:ls
+```
+
 Assuming that the new directory name is 'docNxgres', and that the Express.js service name in 'docker-compose.yml' is the default `server`, it should be possible to remove the application server image by running the following:
 
 ```shell
@@ -66,7 +72,9 @@ Assuming 'docNxgres' as above, and that the PostgreSQL service name is the defau
 docker volume rm docnxgres_app-db-data
 ```
 
-If permissions for Docker are not set up, each of the `docker` commands above can be preceded by `sudo`.
+The commands `npm run compose:rm:ci`, `npm run compose:rm:cv` and `npm run compose:rm:civ` each run a script combining two or three removals, removing either the containers and the image (`:ci`), the containers and the database volume (`:cv`) or the containers, the image and the volume (`:civ`).
+
+If permissions for Docker are not yet set up, it should be possible to precede each of the commands above with `sudo`.
 
 ### Unit & integration tests
 
@@ -158,6 +166,8 @@ To remove the containers, the standard command is enough:
 ```shell
 docker-compose down
 ```
+
+The commands `npm run compose:rm:ci`, `npm run compose:rm:cv` and `npm run compose:rm:civ` can be used to go further, each running a script combining two or three removals, removing either the containers and the image (`:ci`), the containers and the database volume (`:cv`) or the containers, the image and the volume (`:civ`).
 
 ### Running the application server alone
 
