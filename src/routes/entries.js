@@ -5,22 +5,22 @@
 const router = require('express').Router();
 const path = require('path');
 
-const entries = require(path.resolve(__dirname, '../controllers/entries.js'));
+const entries = require(path.resolve(__dirname, '../controllers'));
 
 /*
     Endpoints
 */
 
-router.post('/', (req, res) => {
-    entries.handleCreate(req, res);
+router.post('/', async (req, res) => {
+    await entries.handleCreate(req, res);
 });
 
-router.get('/', (req, res) => {
-    entries.handleReadAll(req, res);
+router.get('/', async (req, res) => {
+    await entries.handleReadAll(req, res);
 });
 
-router.delete('/', (req, res) => {
-    entries.handleDeleteAll(req, res);
+router.delete('/', async (req, res) => {
+    await entries.handleDeleteAll(req, res);
 });
 
 /*
