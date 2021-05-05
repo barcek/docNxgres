@@ -3,6 +3,7 @@ services:
     server:
         container_name: app-server
         depends_on:
+            - cache
             - db
             - proxy
         build:
@@ -16,6 +17,14 @@ services:
             - ./:/usr/src/server/
             - ./logs/server.log:/usr/src/server/logs/server.log
         restart: always
+    cache:
+        container_name: app-cache
+        image: redis:6.2.2-alpine3.13
+        ports:
+            - "6379"
+        restart: always
+        volumes:
+            - app-cache-data:/data
     db:
         container_name: app-db
         image: postgres:13.1-alpine
@@ -43,4 +52,5 @@ services:
             - ./src/public:/var/www
         restart: always
 volumes:
+    app-cache-data:
     app-db-data:

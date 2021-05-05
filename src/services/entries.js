@@ -7,6 +7,7 @@ const path = require('path');
 const validator = require('validator');
 
 const { entriesCRUD } = require(path.resolve(__dirname, '../db'));
+const { getCachedValue, setCachedValue } = require(path.resolve(__dirname, '../cache'));
 
 /*
     Other values
@@ -42,11 +43,12 @@ const create = async (entry) => {
         });
     };
 
-    /* otherwise sanitize, pass to 'create' query & return result */
+    /* otherwise sanitize, pass to 'create' query, clear cache & return result */
 
     const escapedEntry = validator.escape(entry);
     try {
         const newEntry = await entriesCRUD.run('create', [escapedEntry]);
+        await setCachedValue('readAllResult', '');
         const id = newEntry.rows[0].id;
         return Object.assign(successResult, {
             string: `Entry ${escapedEntry} added to database with id ${id}.`
@@ -61,19 +63,26 @@ const create = async (entry) => {
 
 const readAll = async () => {
 
-    /* run 'readAll' query, generate string based on row count & return result */
+    /* check cache for current 'readAll' query result */
+
+    const value = await getCachedValue('readAllResult');
+    if (value) {
+        return Object.assign(successResult, { string: value });
+    };
+
+    /* run 'readAll' query, generate string based on row count & cache & return result */
 
     try {
         const allEntries = await entriesCRUD.run('readAll', []);
         if (allEntries.rows.length === 0) {
-            return Object.assign(successResult, {
-                string: `Database contains no entries.`
-            });
+            const string = 'Database contains no entries.';
+            await setCachedValue('readAllResult', string);
+            return Object.assign(successResult, { string });
         };
         const formattedRows = allEntries.rows.map((row) => `${row.id}: ${row.entry}`);
-        return Object.assign(successResult, {
-            string: `Database contains entries:\n\n${formattedRows.join('\n')}`
-        });
+        const string = `Database contains entries:\n\n${formattedRows.join('\n')}`;
+        await setCachedValue('readAllResult', string);
+        return Object.assign(successResult, { string });
 
     } catch(err) {
         return Object.assign(failureResult, {
@@ -84,10 +93,11 @@ const readAll = async () => {
 
 const deleteAll = async () => {
 
-    /* run 'deleteAll' query, call 'readAll' for result & return result */
+    /* run 'deleteAll' query, clear cache, call 'readAll' for result & return result */
 
     try {
         await entriesCRUD.run('deleteAll', []);
+        await setCachedValue('readAllResult', '');
         return await readAll();
 
     } catch(err) {

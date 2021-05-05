@@ -24,6 +24,8 @@ const {
     //SESSION_MAXAGE = 3600000, //1000 * 60 * 60 = 1 hour
     LOG_FORMAT = 'discreet',
     LOG_PATH = 'logs/server.log',
+    CACHE_HOST,
+    CACHE_PORT,
     DB_DEV_USER,
     DB_DEV_PASS, //NOTE: default value could be changed in .env
     DB_DEV_HOST,
@@ -62,6 +64,10 @@ module.exports = {
         MAXAGE: SESSION_MAXAGE
     },
     */
+    CCH: {
+        HOST: CACHE_HOST,
+        PORT: CACHE_PORT
+    },
     DB: {
         USER: IN_PROD ? DB_PROD_USER : DB_DEV_USER,
         PASS: IN_PROD ? DB_PROD_PASS : DB_DEV_PASS,

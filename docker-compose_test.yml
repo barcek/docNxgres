@@ -1,5 +1,13 @@
 version: "3.8"
 services:
+    cache:
+        container_name: test-cache
+        image: redis:6.2.2-alpine3.13
+        ports:
+            - "9736:6379"
+        volumes:
+            - test-cache-data:/data
+        restart: always
     db:
         container_name: test-db
         image: postgres:13.1-alpine
@@ -14,4 +22,5 @@ services:
             - test-db-data:/var/lib/postgresql/data
         restart: always
 volumes:
+    test-cache-data:
     test-db-data:

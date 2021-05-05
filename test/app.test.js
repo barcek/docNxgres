@@ -8,6 +8,7 @@ const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 
+const { client } = require(path.resolve(__dirname, '../src/cache/client.js'));
 const { pool } = require(path.resolve(__dirname, '../src/db/pool.js'));
 const app = require(path.resolve(__dirname, '../src/app.js'));
 
@@ -108,5 +109,6 @@ describe('app', async () => {
 });
 
 after('all tests - end', () => {
+    client.quit();
     pool.end();
 });
