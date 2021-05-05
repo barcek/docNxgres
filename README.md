@@ -1,12 +1,10 @@
 # docNxgres
 
-A three-container back end using Docker Compose, with one container each for an Nginx reverse proxy server, an Express.js application server and a PostgreSQL database.
+A four-container back end using Docker Compose, with one container each for an Nginx reverse proxy server, an Express.js application server, a Redis cache and a PostgreSQL database.
 
-The setup serves a simple static front end demonstrating the flow of data from the client through the reverse proxy and application server to the database.
+The setup serves a simple static front end demonstrating the flow of data from the client through the reverse proxy and application server to the database. The whole is intended as a working template for similar setups and a sandbox for learning and experimentation with more advanced features and interactions.
 
-The whole is intended as a working template for similar setups and a sandbox for learning and experimentation with more advanced features and interactions.
-
-It is not fully production ready, in the absence of a production ready session store for example. See [Notes on the services](#notes-on-the-services) below for more information.
+It is not fully production ready, absent for example a production ready session store. See [Notes on the services](#notes-on-the-services) below for more information.
 
 In certain areas it provides as options one or more additional lines commented out, and includes comments on choices available and those made for this version.
 
@@ -24,7 +22,7 @@ In certain areas it provides as options one or more additional lines commented o
 
 ## Getting started
 
-You'll need Docker installed.
+You'll need both Docker and Docker Compose installed. Your Docker install may have included Compose. You can check which are present by running the commands `docker -v` and `docker-compose -v` to get the version numbers.
 
 To create and run the containers, clone this repository to a new directory and at the root of that directory run the following:
 
@@ -40,10 +38,17 @@ To remove the containers, run the following:
 docker-compose down
 ```
 
-In the event that one or more of the three Docker images used is not pulled automatically from Docker Hub, the appropriate `docker pull` command can be used. For the specific images used:
+Alternatively, or if this fails, the following command runs a script to remove each container by name:
+
+```shell
+npm run compose:rm:c
+```
+
+In the event that one or more of the four Docker images used is not pulled automatically from Docker Hub, the appropriate `docker pull` command can be used. For the specific images used:
 
 ```shell
 docker pull node:15.4.0-alpine3.10
+docker pull redis:6.2.2-alpine3.13
 docker pull postgres:13.1-alpine
 docker pull nginx:1.19.6-alpine
 ```
@@ -66,10 +71,10 @@ Assuming that the new directory name is 'docNxgres', and that the Express.js ser
 docker rmi docnxgres_server
 ```
 
-Assuming 'docNxgres' as above, and that the PostgreSQL service name is the default `db`, it should be possible to remove the data volume by running the following:
+Assuming 'docNxgres' as above, and that the PostgreSQL service name is the default `db`, it should be possible to remove the data volumes by running the following:
 
 ```shell
-docker volume rm docnxgres_app-db-data
+docker volume rm docnxgres_app-cache-data docnxgres_app-db-data
 ```
 
 The commands `npm run compose:rm:ci`, `npm run compose:rm:cv` and `npm run compose:rm:civ` each run a script combining two or three removals, removing either the containers and the image (`:ci`), the containers and the database volume (`:cv`) or the containers, the image and the volume (`:civ`).
@@ -92,11 +97,9 @@ The tests can then be run using:
 npm test
 ```
 
-This script sets two environment variables to override development values defined in the '.env' file and contains the `mocha --recursive` command. The `--recursive` flag ensures tests in subdirectories are also run.
+This script sets four environment variables to override development values defined in the '.env' file and contains the `mocha --recursive` command. The `--recursive` flag ensures tests in subdirectories are also run.
 
-Both scripts can be found in the file 'package.json'.
-
-When complete, the database container can be stopped with `Ctrl-C` and the containers and database volume removed using the command:
+When complete, the containers can be stopped with `Ctrl-C` and the containers and volumes removed using the command:
 
 ```shell
 npm run test:down
@@ -119,7 +122,7 @@ Finally, the root directory contains four 'docker-compose' files:
 1. 'docker-compose.yml', which has settings for the dev and prod variants with the dev variant commented out;
 2. 'docker-compose_dev.yml' for the dev variant;
 3. 'docker-compose_prod.yml' for the prod variant;
-4. 'docker-compose_test.yml' for the test container.
+4. 'docker-compose_test.yml' for the test containers.
 
 Each of the first three of these does the following:
 
@@ -161,17 +164,23 @@ A script containing the relevant command is available for each variant file, and
 npm run compose:dev
 ```
 
-To remove the containers, the standard command is enough:
+To remove the containers, the standard command can be used:
 
 ```shell
 docker-compose down
+```
+
+As can the alternative, removing each container and volume by name:
+
+```shell
+npm run compose:rm:c
 ```
 
 The commands `npm run compose:rm:ci`, `npm run compose:rm:cv` and `npm run compose:rm:civ` can be used to go further, each running a script combining two or three removals, removing either the containers and the image (`:ci`), the containers and the database volume (`:cv`) or the containers, the image and the volume (`:civ`).
 
 ### Running the application server alone
 
-To run the application server outside of the three-container setup, the value of the preferred -`_HOST` environment variable should be changed from the service name `db` to an alternative, presumably `localhost`.
+To run the application server outside of the four-container setup, the value of each preferred -`_HOST` environment variable should be changed from the service name `cache` or `db` to an alternative, presumably `localhost`.
 
 Two start scripts are available in the file 'package.json'.
 
@@ -210,11 +219,17 @@ For development, it is possible to allow changes in the source code on the host 
     1. The `csurf` package providing protection against CSRF requires the use of the `cookie-parser` or the `express-session` package. In this case, `cookie-parser` has been chosen, for greater simplicity and in line with the approach to data collection issues taken also with logging (see below).
     However, 'src/app.js' contains lines also for `express-session`, specifically lines requiring the package, importing the `SSN` environment variables for session configuration, for the configuration itself and for the `csurf` middleware. These lines are commented out, available as an alternative, albeit with additional changes needed. Using npm, `express-session` can be installed with the command `npm install express-session` and `cookie-parser` uninstalled with `npm uninstall cookie-parser`.
     The configuration for both middlewares assumes the use of HTTPS in production. If `express-session` were to be used in production, the Nginx reverse proxy server would require directives for `X-Forwarded` headers and an alternative session store would need to be used in place of the non-production MemoryStore. While MemoryStore does allow the application server to run if the `cluster` module is not used, e.g. if `app.listen` is applied in 'app.js' and 'index.js' omitted, a warning is given.
-    2. With the default three-container setup, static files are served from the Nginx reverse proxy server. However, 'src/app.js' does contain a line for static serving via Express, by means of the `express.static` middleware. This line is commented out, available as an alternative when the Nginx container is not in use.
+    2. With the default four-container setup, static files are served from the Nginx reverse proxy server. However, 'src/app.js' does contain a line for static serving via Express, by means of the `express.static` middleware. This line is commented out, available as an alternative when the Nginx container is not in use.
     3. The file assumes that data posted from client is sent as a JSON string. However, both 'src/app.js' and 'src/public/script.js' contain lines for use of URI encoding. These lines are commented out, available as an alternative.
 - The file 'src/app.js' also requires the `logger` middleware from the 'log' folder, using the `morgan` package. As with the reverse proxy server, logging is set to a light level (see [app-proxy (Nginx reverse proxy server)](#app-proxy-nginx-reverse-proxy-server) above). The intention here is to avoid data collection issues by default, but if greater collection is required, the log format can be modified, one of the `morgan` presets listed in 'src/log/logger.js' used or one or more new formats added. The 'log' folder also contains the file 'utils.js' offering an `addLogEntry` function for use in error logging.
 
 Reading up on [the Node.js image](https://hub.docker.com/_/node) is recommended.
+
+### app-cache (Redis cache)
+
+- In each 'docker-compose' file, the 'cache' service is assigned a volume named 'app-cache-data' in which data is persisted between uses of the container. If no longer needed, this volume can be removed (see [Getting started](#getting-started) above).
+
+Reading up on [the Redis image](https://hub.docker.com/_/redis) is recommended.
 
 ### app-db (PostgreSQL database)
 
@@ -236,7 +251,6 @@ The following are possible next steps in the development of the code base. The g
 - implement a production-grade session store
 - extend the demonstration REST API to include further CRUD operations and more complex queries
 - provide a parallel GraphQL implementation
-- integrate a data structure cache such as Redis for database results
 - include error logging in the application server log stream
 - extend the set of unit & integration tests
 - add rate limiting to the reverse proxy server
