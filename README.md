@@ -17,6 +17,7 @@ In certain areas it provides as options one or more additional lines commented o
 - [Notes on the services](#notes-on-the-services)
     - [app-proxy (Nginx reverse proxy server)](#app-proxy-nginx-reverse-proxy-server)
     - [app-server (Express.js application server)](#app-server-expressjs-application-server)
+    - [app-cache (Redis cache)](#app-cache-redis-cache)
     - [app-db (PostgreSQL database)](#app-db-postgresql-database)
 - [Development plan](#development-plan)
 
