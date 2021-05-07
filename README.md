@@ -8,6 +8,8 @@ It is not fully production ready, absent for example a production ready session 
 
 In certain areas it provides as options one or more additional lines commented out, and includes comments on choices available and those made for this version.
 
+For the whole at a glance, see [the current repository tree](#repository-tree).
+
 - [Getting started](#getting-started)
     - [Unit & integration tests](#unit--integration-tests)
 - [Environment & mode](#environment--mode)
@@ -20,6 +22,7 @@ In certain areas it provides as options one or more additional lines commented o
     - [app-cache (Redis cache)](#app-cache-redis-cache)
     - [app-db (PostgreSQL database)](#app-db-postgresql-database)
 - [Development plan](#development-plan)
+- [Repository tree](#repository-tree)
 
 ## Getting started
 
@@ -257,3 +260,85 @@ The following are possible next steps in the development of the code base. The g
 - add rate limiting to the reverse proxy server
 - add file caching to the reverse proxy server
 - migrate the project to TypeScript, retaining optional use of JavaScript only for ease of access
+
+## Repository tree
+
+```shell
+./
+├─ logs
+│  ├─ proxy_access.log
+│  └─ server.log
+├─ src
+│  ├─ cache
+│  │  ├─ client.js
+│  │  ├─ index.js
+│  │  └─ operations.js
+│  ├─ config
+│  │  └─ index.js
+│  ├─ controllers
+│  │  ├─ entries.js
+│  │  └─ index.js
+│  ├─ db
+│  │  ├─ crud.js
+│  │  ├─ entries.js
+│  │  ├─ index.js
+│  │  ├─ pool.js
+│  │  └─ table.js
+│  ├─ log
+│  │  ├─ index.js
+│  │  ├─ logger.js
+│  │  ├─ logstream.js
+│  │  └─ utils.js
+│  ├─ public
+│  │  ├─ script.js
+│  │  └─ style.css
+│  ├─ routes
+│  │  ├─ entries.js
+│  │  ├─ error.js
+│  │  └─ index.js
+│  ├─ services
+│  │  ├─ entries.js
+│  │  └─ index.js
+│  ├─ utils
+│  │  ├─ format.js
+│  │  └─ index.js
+│  ├─ views
+│  │  ├─ includes
+│  │  │  ├─ footer.pug
+│  │  │  ├─ form.pug
+│  │  │  └─ header.pug
+│  │  ├─ error.pug
+│  │  ├─ index.pug
+│  │  └─ layout.pug
+│  ├─ app.js
+│  └─ index.js
+├─ test
+│  ├─ db
+│  │  ├─ crud.test.js
+│  │  ├─ db.test.js
+│  │  └─ table.test.js
+│  ├─ log
+│  │  ├─ log.test.js
+│  │  ├─ logger.test.js
+│  │  ├─ logstream.test.js
+│  │  └─ utils.test.js
+│  ├─ utils
+│  │  ├─ format.test.js
+│  │  └─ utils.test.js
+│  └─ app.test.js
+├─ .dockerignore
+├─ .env
+├─ .gitignore
+├─ Dockerfile_dev
+├─ Dockerfile_prod
+├─ LICENSE.txt
+├─ README.md
+├─ default.conf.template
+├─ docker-compose.yml
+├─ docker-compose_dev.yml
+├─ docker-compose_prod.yml
+├─ docker-compose_test.yml
+├─ nginx.conf
+├─ package.json
+└─ package-lock.json
+```
