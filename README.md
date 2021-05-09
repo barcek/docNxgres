@@ -263,7 +263,7 @@ The following are possible next steps in the development of the code base. The g
 
 ## Repository tree
 
-```shell
+```
 ./
 ├─ logs
 │  ├─ proxy_access.log
