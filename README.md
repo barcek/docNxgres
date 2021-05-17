@@ -103,6 +103,12 @@ npm test
 
 This script sets four environment variables to override development values defined in the '.env' file and contains the `mocha --recursive` command. The `--recursive` flag ensures tests in subdirectories are also run.
 
+There is also a 'watch' script to watch for and test on changes:
+
+```shell
+npm run watch
+```
+
 When complete, the containers can be stopped with `Ctrl-C` and the containers and volumes removed using the command:
 
 ```shell
