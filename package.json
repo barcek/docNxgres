@@ -1,6 +1,6 @@
 {
   "name": "docNxgres",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "description": "simple application server, part of a three-container working template back end using Docker Compose and including an Nginx reverse proxy server & PostgreSQL database",
   "main": "index.js",
   "scripts": {
@@ -15,6 +15,7 @@
     "compose:ls": "docker ps -a && docker images && docker volume ls",
     "test:up": "docker-compose -f docker-compose_test.yml up",
     "test:down": "docker rm test-cache test-db && docker volume rm docnxgres_test-cache-data docnxgres_test-db-data",
+    "watch": "CACHE_HOST=localhost CACHE_PORT=9736 DB_DEV_HOST=localhost DB_DEV_PORT=2345 mocha --watch --parallel --recursive",
     "test": "CACHE_HOST=localhost CACHE_PORT=9736 DB_DEV_HOST=localhost DB_DEV_PORT=2345 mocha --recursive"
   },
   "keywords": [
