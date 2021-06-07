@@ -1,6 +1,6 @@
 {
   "name": "docNxgres",
-  "version": "1.10.1",
+  "version": "1.10.2",
   "description": "simple application server, part of a three-container working template back end using Docker Compose and including an Nginx reverse proxy server & PostgreSQL database",
   "main": "index.js",
   "scripts": {
@@ -45,7 +45,7 @@
     "helmet": "^4.2.0",
     "morgan": "^1.10.0",
     "pg": "^8.4.1",
-    "pug": "^3.0.0",
+    "pug": "^3.0.2",
     "redis": "^3.1.2",
     "validator": "^13.1.17"
   },
