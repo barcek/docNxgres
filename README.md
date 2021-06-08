@@ -235,6 +235,8 @@ For development, it is possible to allow changes in the source code on the host 
 
 Reading up on [the Node.js image](https://hub.docker.com/_/node) is recommended.
 
+The `npm audit` command can be used to run a security audit on the dependencies used, with the process returning information on updates where available. The command `npm audit fix` can be used instead or thereafter to install compatible updates. See the npm documentation for [more detail](https://docs.npmjs.com/auditing-package-dependencies-for-security-vulnerabilities).
+
 ### app-cache (Redis cache)
 
 - In each 'docker-compose' file, the 'cache' service is assigned a volume named 'app-cache-data' in which data is persisted between uses of the container. If no longer needed, this volume can be removed (see [Getting started](#getting-started) above).
