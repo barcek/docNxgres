@@ -51,10 +51,10 @@ npm run compose:rm:c
 In the event that one or more of the four Docker images used is not pulled automatically from Docker Hub, the appropriate `docker pull` command can be used. For the specific images used:
 
 ```shell
-docker pull node:15.4.0-alpine3.10
-docker pull redis:6.2.2-alpine3.13
-docker pull postgres:13.1-alpine
-docker pull nginx:1.19.6-alpine
+docker pull node:16.3.0-alpine3.13
+docker pull redis:6.2.4-alpine3.13
+docker pull postgres:13.3-alpine
+docker pull nginx:1.21.0-alpine
 ```
 
 To list the current images, containers and volumes, run the following command:
