@@ -1,13 +1,15 @@
 FROM node:16.3.0-alpine3.13
 
-WORKDIR usr/src/server
-
-COPY package*.json ./
-
 ENV NODE_ENV=production
 
+WORKDIR /usr/src/server
+
+COPY package*.json ./
 RUN npm ci
 
-COPY . .
+COPY . ./
+
+RUN chown -R node:node .
+USER node
 
 CMD ["npm", "run", "start:prod"]
