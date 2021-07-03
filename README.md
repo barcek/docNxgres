@@ -45,7 +45,7 @@ docker-compose down
 Alternatively, or if this fails, the following command runs a script to remove each container by name:
 
 ```shell
-npm run compose:rm:c
+docker rm app-server app-cache app-db app-proxy
 ```
 
 In the event that one or more of the four Docker images used is not pulled automatically from Docker Hub, the appropriate `docker pull` command can be used. For the specific images used:
@@ -81,7 +81,7 @@ Assuming 'docNxgres' as above, and that the PostgreSQL service name is the defau
 docker volume rm docnxgres_app-cache-data docnxgres_app-db-data
 ```
 
-The commands `npm run compose:rm:ci`, `npm run compose:rm:cv` and `npm run compose:rm:civ` each run a script combining two or three removals, removing either the containers and the image (`:ci`), the containers and the database volume (`:cv`) or the containers, the image and the volume (`:civ`).
+The command `npm run compose:rm:c` runs a script to remove the containers, specifically `docker-compose down` (see above). The commands `npm run compose:rm:ci`, `npm run compose:rm:cv` and `npm run compose:rm:civ` each run a script combining two or three removals, removing either the containers and the image (`:ci`), the containers and the database volume (`:cv`) or the containers, the image and the volume (`:civ`). These scripts are also uses of `docker-compose down`.
 
 If permissions for Docker are not yet set up, it should be possible to precede each of the commands above with `sudo`.
 
@@ -180,7 +180,7 @@ To remove the containers, the standard command can be used:
 docker-compose down
 ```
 
-As can the alternative, removing each container and volume by name:
+Again, this is the content of the following script:
 
 ```shell
 npm run compose:rm:c
