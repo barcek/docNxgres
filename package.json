@@ -1,6 +1,6 @@
 {
   "name": "docNxgres",
-  "version": "1.10.6",
+  "version": "1.10.7",
   "description": "simple application server, part of a four-container working template back end using Docker Compose and including an Nginx reverse proxy server, Redis cache & PostgreSQL database",
   "main": "index.js",
   "scripts": {
