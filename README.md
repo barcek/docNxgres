@@ -15,6 +15,8 @@ For the whole at a glance, see [the current repository tree](#repository-tree).
 - [Environment & mode](#environment--mode)
     - [Environment variables](#environment-variables)
     - [Development & production](#development--production)
+        - [Combined](#combined)
+        - [Separate](#separate)
     - [Running the application server alone](#running-the-application-server-alone)
 - [Notes on the services](#notes-on-the-services)
     - [app-proxy (Nginx reverse proxy server)](#app-proxy-nginx-reverse-proxy-server)
@@ -144,7 +146,7 @@ The application server file 'src/config/index.js' accesses the '.env' file using
 
 ### Development & production
 
-#### docker-compose.yml
+#### Combined
 
 The file 'docker-compose.yml' specifies whether the application server image is to be built for development or for production.
 
@@ -156,7 +158,7 @@ For development, it is also possible to uncomment line 17 - `./:/usr/src/server/
 
 If different database settings are required for development, these can be set in the corresponding environment variables in the '.env' file. Those variables can then be uncommented in the file 'docker-compose.yml' and the alternate variables for production commented out.
 
-#### docker-compose_dev.yml & docker-compose_prod.yml
+#### Separate
 
 The files 'docker-compose_dev.yml' and 'docker-compose_prod.yml' each contain the settings for the corresponding variant of the file 'docker-compose.yml', avoiding the need to comment out and uncomment lines.
 
