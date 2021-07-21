@@ -11,7 +11,10 @@ In certain areas it provides as options one or more additional lines commented o
 For the whole at a glance, see [the current repository tree](#repository-tree).
 
 - [Getting started](#getting-started)
-    - [Unit & integration tests](#unit--integration-tests)
+    - [Pulling the images](#pulling-the-images)
+    - [Listing all elements](#listing-all-elements)
+    - [Removal in full or part](#removal-in-full-or-part)
+- [Unit & integration tests](#unit--integration-tests)
 - [Environment & mode](#environment--mode)
     - [Environment variables](#environment-variables)
     - [Development & production](#development--production)
@@ -50,6 +53,8 @@ Alternatively, or if this fails, the following command runs a script to remove e
 docker rm app-server app-cache app-db app-proxy
 ```
 
+### Pulling the images
+
 In the event that one or more of the four Docker images used is not pulled automatically from Docker Hub, the appropriate `docker pull` command can be used. For the specific images used:
 
 ```shell
@@ -58,6 +63,8 @@ docker pull redis:6.2.4-alpine3.13
 docker pull postgres:13.3-alpine
 docker pull nginx:1.21.0-alpine
 ```
+
+### Listing all elements
 
 To list the current images, containers and volumes, run the following command:
 
@@ -70,6 +77,8 @@ This is also available as a script, run with the following command:
 ```shell
 npm run compose:ls
 ```
+
+### Removal in full or part
 
 Assuming that the new directory name is 'docNxgres', and that the Express.js service name in 'docker-compose.yml' is the default `server`, it should be possible to remove the application server image by running the following:
 
@@ -87,7 +96,7 @@ The command `npm run compose:rm:c` runs a script to remove the containers, speci
 
 If permissions for Docker are not yet set up, it should be possible to precede each of the commands above with `sudo`.
 
-### Unit & integration tests
+## Unit & integration tests
 
 The tests use the npm packages `mocha`, `chai` and `chai-http` as dev dependencies. They assume that the test database container defined in 'dokcer-compose_test.yml' is running.
 
