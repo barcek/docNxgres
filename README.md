@@ -98,7 +98,7 @@ If permissions for Docker are not yet set up, it should be possible to precede e
 
 ## Unit & integration tests
 
-The tests use the npm packages `mocha`, `chai` and `chai-http` as dev dependencies. They assume that the test database container defined in 'dokcer-compose_test.yml' is running.
+The tests use the npm packages `mocha`, `chai` and `chai-http` as dev dependencies. They assume that the test database container defined in 'docker-compose_test.yml' is running.
 
 The database container can be run with the following command:
 
